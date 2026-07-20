@@ -25,3 +25,55 @@ O arquivo de folhas de estilo é responsável pela estética premium e futurista
 - **Estilização Layout:** Define o visual do álbum (tamanhos de página, sombras simulando lombadas de livro, cursores personalizados de interação).
 - **Identidade Visual:** Aplica gradientes radiais sofisticados de plano de fundo e cria o design elegante dos emblemas (*badges*) para as categorias.
 - **Transições:** Aplica animações e efeitos suaves (micro-interações) nos botões de controle para melhorar a experiência geral do usuário.
+
+### `back_end/main/main.py`
+Este é o coração do nosso servidor backend, construído utilizando Python e **FastAPI**. Ele é a API que alimenta o álbum com os dados e imagens das figurinhas. Suas principais partes são:
+- **Configuração de CORS:** Utiliza o `CORSMiddleware` para aceitar requisições de qualquer origem (inclusive do Live Server do frontend rodando em outra porta).
+- **Banco de Dados em Memória:** Contém uma lista estática de dicionários com as 30 figurinhas oficiais da "Copa do Mundo Tech" (incluindo `id`, `nome`, `categoria` e o `imagem_url`).
+- **Endpoint GET `/figurinhas`:** Retorna a lista completa de figurinhas disponíveis em formato JSON.
+- **Endpoint Dinâmico GET `/figurinhas/{id}/imagem`:** Recebe um `id` numérico, e utiliza a biblioteca `glob` para buscar automaticamente dentro da pasta `figurinhas/` qual é o arquivo de imagem correspondente (usando o prefixo, ex: `01`, não importando a extensão da imagem). Caso encontrado, ele entrega o arquivo bruto via `FileResponse`. Retorna erro 404 se a imagem não existir.
+
+---
+
+## Como Executar o Projeto Localmente
+
+Se você deseja rodar este projeto e testar a comunicação entre o Frontend e a API, siga os passos abaixo no seu terminal:
+
+### 1. Preparando o Backend (API)
+Primeiro, garanta que você tem o Python instalado na sua máquina.
+
+Crie um ambiente virtual (recomendado) na raiz do projeto:
+```bash
+python3 -m venv .venv
+```
+
+Ative o ambiente virtual:
+- No **Linux ou macOS**:
+  ```bash
+  source .venv/bin/activate
+  ```
+- No **Windows**:
+  ```powershell
+  .venv\Scripts\activate
+  ```
+
+Instale as dependências usando o arquivo `requirements.txt`:
+```bash
+pip install -r requirements.txt
+```
+
+Navegue até a pasta do servidor e inicie a API:
+```bash
+cd back_end/main
+uvicorn main:app --reload
+```
+A API agora estará rodando em: `http://localhost:8000`.
+
+### 2. Rodando o Frontend
+Com o backend já rodando, você pode iniciar o frontend de diferentes maneiras. A mais comum é:
+- Utilizar a extensão **Live Server** no VS Code: basta abrir o arquivo `index.html` e clicar em "Go Live".
+- Ou, no terminal, abra uma nova aba na raiz do projeto e rode o servidor nativo do Python:
+```bash
+python3 -m http.server 5500
+```
+Acesse `http://localhost:5500` no seu navegador e você verá o álbum interativo ganhando vida e buscando as imagens diretamente da sua API!
